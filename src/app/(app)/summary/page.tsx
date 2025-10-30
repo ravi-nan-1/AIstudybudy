@@ -10,13 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2, FileText, Download } from "lucide-react";
@@ -29,21 +22,20 @@ type State = {
 
 export default function SummaryPage() {
   const { content: availableContent } = useContent();
-  const [contentId, setContentId] = useState<string | null>(null);
 
   const [state, formAction, isPending] = useActionState(
-    async (prevState: State, formData: FormData): Promise<State> => {
-      const id = formData.get("contentId") as string;
-      if (!id) {
-        return { summary: null, error: "Please select a content to summarize." };
+    async (prevState: State): Promise<State> => {
+      if (availableContent.length === 0) {
+        return { summary: null, error: "Please upload some content first." };
       }
-      const contentToSummarize = availableContent.find((c) => c.id === id);
-      if (!contentToSummarize) {
-        return { summary: null, error: "Content not found." };
-      }
+      
+      const combinedContent = availableContent
+        .map((c) => `Content from: ${c.title}\n\n${c.fullText}`)
+        .join("\n\n---\n\n");
+
       try {
         const result = await summarizeUploadedContent({
-          content: contentToSummarize.fullText,
+          content: combinedContent,
         });
         return { summary: result.summary, error: null };
       } catch (error) {
@@ -55,65 +47,76 @@ export default function SummaryPage() {
   );
 
   const handleDownloadPdf = () => {
-    if (!state.summary || !contentId) return;
-    const content = availableContent.find((c) => c.id === contentId);
-    if (!content) return;
+    if (!state.summary) return;
 
     const doc = new jsPDF();
-    
+    const pageHeight = doc.internal.pageSize.height;
+    const pageWidth = doc.internal.pageSize.width;
+    const margin = 15;
+    let yPos = 20;
+
+    const checkAndAddPage = (spaceNeeded: number) => {
+        if (yPos + spaceNeeded > pageHeight - margin) {
+            doc.addPage();
+            yPos = 20;
+        }
+    }
+
     doc.setFont("helvetica", "bold");
-    doc.text(`Summary: ${content.title}`, 10, 10);
+    doc.setFontSize(24);
+    doc.text("AI Study Buddy - Master Cheat Sheet", pageWidth / 2, yPos, { align: 'center' });
+    yPos += 15;
+    
+    doc.setDrawColor(200, 200, 200);
+    doc.line(margin, yPos, pageWidth - margin, yPos);
+    yPos += 10;
+
+    const summaryLines = doc.splitTextToSize(state.summary, pageWidth - (margin * 2));
     
     doc.setFont("helvetica", "normal");
-    const splitText = doc.splitTextToSize(state.summary, 180);
-    doc.text(splitText, 10, 20);
+    doc.setFontSize(11);
     
-    doc.save(`${content.title.replace(/\s+/g, '_').toLowerCase()}_summary.pdf`);
+    summaryLines.forEach((line: string) => {
+        checkAndAddPage(5); // Approximate height of one line
+        doc.text(line, margin, yPos);
+        yPos += 5;
+    });
+
+    doc.save(`ai_study_buddy_cheat_sheet.pdf`);
   };
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Generate Summary</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Generate Study Guide</h1>
         <p className="text-muted-foreground">
-          Get a quick summary of your uploaded content to grasp key points.
+          Create a comprehensive cheat sheet from all your uploaded content.
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Summarize Content</CardTitle>
+          <CardTitle>Generate Full Study Guide</CardTitle>
           <CardDescription>
-            Select a piece of content and the AI will generate a concise
-            summary for you.
+            Click the button below and the AI will generate a single, unified
+            summary from all the materials in your library.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={formAction} className="space-y-4">
-            <Select
-              name="contentId"
-              onValueChange={setContentId}
-              disabled={isPending || availableContent.length === 0}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select content..." />
-              </SelectTrigger>
-              <SelectContent>
-                {availableContent.map((content) => (
-                  <SelectItem key={content.id} value={content.id}>
-                    {content.title}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button type="submit" disabled={isPending || !contentId}>
+          <form action={formAction}>
+            <Button type="submit" disabled={isPending || availableContent.length === 0}>
               {isPending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <FileText className="mr-2 h-4 w-4" />
               )}
-              Generate Summary
+              Generate Full Study Guide
             </Button>
+            {availableContent.length === 0 && (
+                <p className="text-sm text-muted-foreground mt-4">
+                    You don't have any content in your library. Please <a href="/upload" className="underline">upload content</a> to generate a study guide.
+                </p>
+            )}
           </form>
         </CardContent>
       </Card>
@@ -141,10 +144,9 @@ export default function SummaryPage() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Summary</CardTitle>
+              <CardTitle>Master Cheat Sheet</CardTitle>
               <CardDescription>
-                Summary for:{" "}
-                {availableContent.find((c) => c.id === contentId)?.title}
+                A comprehensive summary of all your content.
               </CardDescription>
             </div>
             <Button variant="outline" onClick={handleDownloadPdf}>
@@ -153,8 +155,8 @@ export default function SummaryPage() {
             </Button>
           </CardHeader>
           <CardContent>
-            <ScrollArea className="h-72 w-full rounded-md border p-4 bg-muted/50">
-              <p className="text-sm whitespace-pre-wrap">{state.summary}</p>
+            <ScrollArea className="h-96 w-full rounded-md border p-4 bg-muted/50">
+              <pre className="text-sm whitespace-pre-wrap font-mono">{state.summary}</pre>
             </ScrollArea>
           </CardContent>
         </Card>

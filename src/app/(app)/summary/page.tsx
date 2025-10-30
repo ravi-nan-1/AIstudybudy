@@ -111,10 +111,10 @@ export default function SummaryPage() {
       const trimmedLine = line.trim();
 
       if (trimmedLine.startsWith('```')) {
-          inCodeBlock = !inCodeBlock;
-          if (!inCodeBlock) {
+          if (inCodeBlock) {
               drawCodeBlock(); // Draw the completed code block
           }
+          inCodeBlock = !inCodeBlock;
           return;
       }
 

@@ -68,6 +68,8 @@ export default function SummaryPage() {
     let yPos = 20;
 
     doc.addFont("courier", "normal", "Courier");
+    doc.addFont("helvetica", "normal", "Helvetica");
+    doc.addFont("helvetica", "bold", "Helvetica-Bold");
 
     const checkAndAddPage = (spaceNeeded: number) => {
       if (yPos + spaceNeeded > pageHeight - margin) {
@@ -91,7 +93,7 @@ export default function SummaryPage() {
       if (codeBlockLines.length > 0) {
         const blockHeight = codeBlockLines.length * 4 + 6;
         checkAndAddPage(blockHeight + 2);
-        doc.setFillColor(245, 245, 245);
+        doc.setFillColor(240, 240, 240);
         doc.rect(margin, yPos - 3, contentWidth, blockHeight, 'F');
         doc.setFont("courier", "normal");
         doc.setFontSize(9);
@@ -99,9 +101,10 @@ export default function SummaryPage() {
         doc.text(codeBlockLines.join('\n'), margin + 3, yPos + 1);
         yPos += blockHeight;
         codeBlockLines = [];
+        doc.setTextColor(80, 80, 80);
       }
     };
-
+    
     lines.forEach(line => {
       const trimmedLine = line.trim();
 
@@ -117,40 +120,24 @@ export default function SummaryPage() {
         codeBlockLines.push(line);
         return;
       }
-
+      
       if (!trimmedLine) {
         yPos += 5;
         checkAndAddPage(5);
         return;
       }
+      
+      const isBold = trimmedLine.startsWith('**') && trimmedLine.endsWith('**');
 
-      if (/^\d+\.\s/.test(trimmedLine) || /^###\s/.test(trimmedLine)) {
-        checkAndAddPage(12);
+      if (isBold) {
+        checkAndAddPage(10);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(14);
-        doc.setFillColor(231, 235, 240);
-        const titleText = trimmedLine.replace(/^\d+\.\s/, '').replace(/^###\s/, '');
-        doc.rect(margin, yPos - 5, contentWidth, 10, 'F');
+        doc.setFontSize(12);
         doc.setTextColor(40, 40, 40);
-        doc.text(titleText, margin + 2, yPos);
-        yPos += 12;
-      } else if (trimmedLine.startsWith('*   **') && trimmedLine.endsWith('**')) {
-        checkAndAddPage(8);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(11);
-        doc.setTextColor(60, 60, 60);
-        const text = trimmedLine.replace(/\*   \*\*|\*\*/g, '');
-        doc.text(text, margin + 5, yPos);
-        yPos += 6;
-      } else if (trimmedLine.startsWith('*   ')) {
-        checkAndAddPage(5);
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(10);
-        doc.setTextColor(80, 80, 80);
-        const bulletContent = doc.splitTextToSize(trimmedLine.replace('*   ', ''), contentWidth - 10);
-        doc.text('•', margin + 8, yPos);
-        doc.text(bulletContent, margin + 12, yPos);
-        yPos += bulletContent.length * 4 + 2;
+        const text = trimmedLine.replace(/\*\*/g, '');
+        const textLines = doc.splitTextToSize(text, contentWidth);
+        doc.text(textLines, margin, yPos);
+        yPos += textLines.length * 5 + 3;
       } else {
         checkAndAddPage(5 * doc.splitTextToSize(trimmedLine, contentWidth).length);
         doc.setFont("helvetica", "normal");

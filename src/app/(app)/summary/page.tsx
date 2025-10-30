@@ -10,6 +10,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Loader2, FileText, Download } from "lucide-react";
@@ -18,36 +25,40 @@ import jsPDF from "jspdf";
 type State = {
   summary: string | null;
   error: string | null;
+  title: string | null;
 };
 
 export default function SummaryPage() {
   const { content: availableContent } = useContent();
+  const [contentId, setContentId] = useState<string | null>(null);
 
   const [state, formAction, isPending] = useActionState(
-    async (prevState: State): Promise<State> => {
-      if (availableContent.length === 0) {
-        return { summary: null, error: "Please upload some content first." };
+    async (prevState: State, formData: FormData): Promise<State> => {
+      const id = formData.get("contentId") as string;
+      if (!id) {
+        return { summary: null, error: "Please select a content to summarize.", title: null };
       }
-      
-      const combinedContent = availableContent
-        .map((c) => `Content from: ${c.title}\n\n${c.fullText}`)
-        .join("\n\n---\n\n");
+
+      const selectedContent = availableContent.find((c) => c.id === id);
+      if (!selectedContent) {
+        return { summary: null, error: "Content not found.", title: null };
+      }
 
       try {
         const result = await summarizeUploadedContent({
-          content: combinedContent,
+          content: selectedContent.fullText,
         });
-        return { summary: result.summary, error: null };
+        return { summary: result.summary, error: null, title: selectedContent.title };
       } catch (error) {
         console.error(error);
-        return { summary: null, error: "Failed to generate summary." };
+        return { summary: null, error: "Failed to generate summary.", title: null };
       }
     },
-    { summary: null, error: null }
+    { summary: null, error: null, title: null }
   );
 
   const handleDownloadPdf = () => {
-    if (!state.summary) return;
+    if (!state.summary || !state.title) return;
 
     const doc = new jsPDF();
     const pageHeight = doc.internal.pageSize.height;
@@ -64,7 +75,7 @@ export default function SummaryPage() {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(24);
-    doc.text("AI Study Buddy - Master Cheat Sheet", pageWidth / 2, yPos, { align: 'center' });
+    doc.text(`Cheat Sheet: ${state.title}`, pageWidth / 2, yPos, { align: 'center' });
     yPos += 15;
     
     doc.setDrawColor(200, 200, 200);
@@ -82,7 +93,7 @@ export default function SummaryPage() {
         yPos += 5;
     });
 
-    doc.save(`ai_study_buddy_cheat_sheet.pdf`);
+    doc.save(`${state.title.replace(/\s+/g, '_').toLowerCase()}_cheat_sheet.pdf`);
   };
 
   return (
@@ -90,29 +101,44 @@ export default function SummaryPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Generate Study Guide</h1>
         <p className="text-muted-foreground">
-          Create a comprehensive cheat sheet from all your uploaded content.
+          Create a comprehensive cheat sheet from your uploaded content.
         </p>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Generate Full Study Guide</CardTitle>
+          <CardTitle>Generate Cheat Sheet</CardTitle>
           <CardDescription>
-            Click the button below and the AI will generate a single, unified
-            summary from all the materials in your library.
+            Select a piece of content to create a detailed study guide.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={formAction}>
-            <Button type="submit" disabled={isPending || availableContent.length === 0}>
+          <form action={formAction} className="space-y-4">
+             <Select
+              name="contentId"
+              onValueChange={setContentId}
+              disabled={isPending || availableContent.length === 0}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select content..." />
+              </SelectTrigger>
+              <SelectContent>
+                {availableContent.map((content) => (
+                  <SelectItem key={content.id} value={content.id}>
+                    {content.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Button type="submit" disabled={isPending || !contentId}>
               {isPending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <FileText className="mr-2 h-4 w-4" />
               )}
-              Generate Full Study Guide
+              Generate Cheat Sheet
             </Button>
-            {availableContent.length === 0 && (
+             {availableContent.length === 0 && (
                 <p className="text-sm text-muted-foreground mt-4">
                     You don't have any content in your library. Please <a href="/upload" className="underline">upload content</a> to generate a study guide.
                 </p>
@@ -140,13 +166,13 @@ export default function SummaryPage() {
         </Card>
       )}
 
-      {state.summary && !isPending && (
+      {state.summary && !isPending && state.title && (
         <Card>
           <CardHeader className="flex flex-row items-center justify-between">
             <div>
-              <CardTitle>Master Cheat Sheet</CardTitle>
+              <CardTitle>{state.title} - Cheat Sheet</CardTitle>
               <CardDescription>
-                A comprehensive summary of all your content.
+                A comprehensive summary of your selected content.
               </CardDescription>
             </div>
             <Button variant="outline" onClick={handleDownloadPdf}>

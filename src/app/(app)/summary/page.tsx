@@ -67,6 +67,8 @@ export default function SummaryPage() {
     const contentWidth = pageWidth - margin * 2;
     let yPos = 20;
 
+    doc.addFont("courier", "normal", "Courier");
+
     const checkAndAddPage = (spaceNeeded: number) => {
       if (yPos + spaceNeeded > pageHeight - margin) {
         doc.addPage();
@@ -83,11 +85,45 @@ export default function SummaryPage() {
     yPos += 15;
 
     const lines = state.summary.split('\n');
+    let inCodeBlock = false;
+    let codeBlockLines: string[] = [];
+
+    const drawCodeBlock = () => {
+        if (codeBlockLines.length > 0) {
+            const blockHeight = (codeBlockLines.length * 4) + 6;
+            checkAndAddPage(blockHeight + 2);
+            doc.setFillColor(245, 245, 245); // Light gray for code block
+            doc.rect(margin, yPos - 3, contentWidth, blockHeight, 'F');
+            
+            doc.setFont("courier", "normal");
+            doc.setFontSize(9);
+            doc.setTextColor(50, 50, 50);
+
+            doc.text(codeBlockLines.join('\n'), margin + 3, yPos + 1);
+
+            yPos += blockHeight;
+            codeBlockLines = []; // Reset for next block
+        }
+    };
+
 
     lines.forEach(line => {
       const trimmedLine = line.trim();
+
+      if (trimmedLine.startsWith('```')) {
+          inCodeBlock = !inCodeBlock;
+          if (!inCodeBlock) {
+              drawCodeBlock(); // Draw the completed code block
+          }
+          return;
+      }
+
+      if (inCodeBlock) {
+          codeBlockLines.push(line);
+          return;
+      }
       
-      // Skip empty lines
+      // Skip empty lines between other content types
       if (!trimmedLine) {
         yPos += 5;
         checkAndAddPage(5);
@@ -95,18 +131,17 @@ export default function SummaryPage() {
       }
 
       // Main section headers (e.g., "1. What is React?")
-      if (/^\d+\.\s/.test(trimmedLine)) {
+      if (/^\d+\.\s/.test(trimmedLine) || /^###\s/.test(trimmedLine)) {
         checkAndAddPage(12);
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
         doc.setFillColor(231, 235, 240); // Light gray background
         
-        const titleText = trimmedLine.replace(/^\d+\.\s/, '');
-        const titleWidth = doc.getTextWidth(titleText) + 8;
+        const titleText = trimmedLine.replace(/^\d+\.\s/, '').replace(/^###\s/, '');
         
         doc.rect(margin, yPos - 5, contentWidth, 10, 'F');
         doc.setTextColor(40, 40, 40);
-        doc.text(trimmedLine, margin + 2, yPos);
+        doc.text(titleText, margin + 2, yPos);
         yPos += 12;
       } 
       // Sub-section headers (e.g., "*   **Components:**")
@@ -115,7 +150,8 @@ export default function SummaryPage() {
         doc.setFont("helvetica", "bold");
         doc.setFontSize(11);
         doc.setTextColor(60, 60, 60);
-        doc.text(trimmedLine.replace(/\*   \*\*|\*\*/g, ''), margin + 5, yPos);
+        const text = trimmedLine.replace(/\*   \*\*|\*\*/g, '');
+        doc.text(text, margin + 5, yPos);
         yPos += 6;
       }
       // Bullet points
@@ -140,6 +176,9 @@ export default function SummaryPage() {
         yPos += (textLines.length * 4) + 2;
       }
     });
+
+    // In case the file ends with a code block
+    drawCodeBlock();
 
     doc.save(`${state.title.replace(/\s+/g, '_').toLowerCase()}_cheat_sheet.pdf`);
   };
@@ -207,7 +246,7 @@ export default function SummaryPage() {
         <Card className="border-destructive">
           <CardHeader>
             <CardTitle className="text-destructive">Error</CardTitle>
-          </CardHeader>
+          </Header>
           <CardContent>
             <p>{state.error}</p>
           </CardContent>

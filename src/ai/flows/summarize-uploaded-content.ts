@@ -20,7 +20,6 @@ export type SummarizeUploadedContentInput = z.infer<
 
 const SummarizeUploadedContentOutputSchema = z.object({
   summary: z.string().describe('The summary of the content.'),
-  progress: z.string().describe('A short status message indicating the summary progress.')
 });
 export type SummarizeUploadedContentOutput = z.infer<
   typeof SummarizeUploadedContentOutputSchema
@@ -47,10 +46,6 @@ const summarizeUploadedContentFlow = ai.defineFlow(
   },
   async input => {
     const {output} = await prompt(input);
-    return {
-      ...output,
-      progress: 'Content summarization complete.',
-    };
+    return output!;
   }
 );
-

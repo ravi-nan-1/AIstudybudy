@@ -64,33 +64,81 @@ export default function SummaryPage() {
     const pageHeight = doc.internal.pageSize.height;
     const pageWidth = doc.internal.pageSize.width;
     const margin = 15;
+    const contentWidth = pageWidth - margin * 2;
     let yPos = 20;
 
     const checkAndAddPage = (spaceNeeded: number) => {
-        if (yPos + spaceNeeded > pageHeight - margin) {
-            doc.addPage();
-            yPos = 20;
-        }
-    }
+      if (yPos + spaceNeeded > pageHeight - margin) {
+        doc.addPage();
+        yPos = 20;
+      }
+    };
 
+    // Main Title
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(24);
-    doc.text(`Cheat Sheet: ${state.title}`, pageWidth / 2, yPos, { align: 'center' });
+    doc.setFontSize(22);
+    doc.text(`Cheat Sheet: ${state.title}`, pageWidth / 2, yPos, {
+      align: "center",
+    });
     yPos += 15;
-    
-    doc.setDrawColor(200, 200, 200);
-    doc.line(margin, yPos, pageWidth - margin, yPos);
-    yPos += 10;
 
-    const summaryLines = doc.splitTextToSize(state.summary, pageWidth - (margin * 2));
-    
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    
-    summaryLines.forEach((line: string) => {
-        checkAndAddPage(5); // Approximate height of one line
-        doc.text(line, margin, yPos);
+    const lines = state.summary.split('\n');
+
+    lines.forEach(line => {
+      const trimmedLine = line.trim();
+      
+      // Skip empty lines
+      if (!trimmedLine) {
         yPos += 5;
+        checkAndAddPage(5);
+        return;
+      }
+
+      // Main section headers (e.g., "1. What is React?")
+      if (/^\d+\.\s/.test(trimmedLine)) {
+        checkAndAddPage(12);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setFillColor(231, 235, 240); // Light gray background
+        
+        const titleText = trimmedLine.replace(/^\d+\.\s/, '');
+        const titleWidth = doc.getTextWidth(titleText) + 8;
+        
+        doc.rect(margin, yPos - 5, contentWidth, 10, 'F');
+        doc.setTextColor(40, 40, 40);
+        doc.text(trimmedLine, margin + 2, yPos);
+        yPos += 12;
+      } 
+      // Sub-section headers (e.g., "*   **Components:**")
+      else if (trimmedLine.startsWith('*   **') && trimmedLine.endsWith('**')) {
+        checkAndAddPage(8);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(60, 60, 60);
+        doc.text(trimmedLine.replace(/\*   \*\*|\*\*/g, ''), margin + 5, yPos);
+        yPos += 6;
+      }
+      // Bullet points
+      else if (trimmedLine.startsWith('*   ')) {
+        checkAndAddPage(5);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(80, 80, 80);
+        const bulletContent = doc.splitTextToSize(trimmedLine.replace('*   ', ''), contentWidth - 10);
+        doc.text('•', margin + 8, yPos);
+        doc.text(bulletContent, margin + 12, yPos);
+        yPos += (bulletContent.length * 4) + 2;
+      }
+      // Regular text / description
+      else {
+        checkAndAddPage(5 * doc.splitTextToSize(trimmedLine, contentWidth).length);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(80, 80, 80);
+        const textLines = doc.splitTextToSize(trimmedLine, contentWidth);
+        doc.text(textLines, margin, yPos);
+        yPos += (textLines.length * 4) + 2;
+      }
     });
 
     doc.save(`${state.title.replace(/\s+/g, '_').toLowerCase()}_cheat_sheet.pdf`);

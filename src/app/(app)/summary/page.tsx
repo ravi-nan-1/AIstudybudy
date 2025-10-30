@@ -76,7 +76,6 @@ export default function SummaryPage() {
       }
     };
 
-    // Main Title
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
     doc.text(`Cheat Sheet: ${state.title}`, pageWidth / 2, yPos, {
@@ -89,63 +88,53 @@ export default function SummaryPage() {
     let codeBlockLines: string[] = [];
 
     const drawCodeBlock = () => {
-        if (codeBlockLines.length > 0) {
-            const blockHeight = (codeBlockLines.length * 4) + 6;
-            checkAndAddPage(blockHeight + 2);
-            doc.setFillColor(245, 245, 245); // Light gray for code block
-            doc.rect(margin, yPos - 3, contentWidth, blockHeight, 'F');
-            
-            doc.setFont("courier", "normal");
-            doc.setFontSize(9);
-            doc.setTextColor(50, 50, 50);
-
-            doc.text(codeBlockLines.join('\n'), margin + 3, yPos + 1);
-
-            yPos += blockHeight;
-            codeBlockLines = []; // Reset for next block
-        }
+      if (codeBlockLines.length > 0) {
+        const blockHeight = codeBlockLines.length * 4 + 6;
+        checkAndAddPage(blockHeight + 2);
+        doc.setFillColor(245, 245, 245);
+        doc.rect(margin, yPos - 3, contentWidth, blockHeight, 'F');
+        doc.setFont("courier", "normal");
+        doc.setFontSize(9);
+        doc.setTextColor(50, 50, 50);
+        doc.text(codeBlockLines.join('\n'), margin + 3, yPos + 1);
+        yPos += blockHeight;
+        codeBlockLines = [];
+      }
     };
-
 
     lines.forEach(line => {
       const trimmedLine = line.trim();
 
       if (trimmedLine.startsWith('```')) {
-          if (inCodeBlock) {
-              drawCodeBlock(); // Draw the completed code block
-          }
-          inCodeBlock = !inCodeBlock;
-          return;
+        if (inCodeBlock) {
+          drawCodeBlock();
+        }
+        inCodeBlock = !inCodeBlock;
+        return;
       }
 
       if (inCodeBlock) {
-          codeBlockLines.push(line);
-          return;
+        codeBlockLines.push(line);
+        return;
       }
-      
-      // Skip empty lines between other content types
+
       if (!trimmedLine) {
         yPos += 5;
         checkAndAddPage(5);
         return;
       }
 
-      // Main section headers (e.g., "1. What is React?")
       if (/^\d+\.\s/.test(trimmedLine) || /^###\s/.test(trimmedLine)) {
         checkAndAddPage(12);
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
-        doc.setFillColor(231, 235, 240); // Light gray background
-        
+        doc.setFillColor(231, 235, 240);
         const titleText = trimmedLine.replace(/^\d+\.\s/, '').replace(/^###\s/, '');
-        
         doc.rect(margin, yPos - 5, contentWidth, 10, 'F');
         doc.setTextColor(40, 40, 40);
         doc.text(titleText, margin + 2, yPos);
         yPos += 12;
-      } 
-      // Sub-section headers (e.g., "*   **Components:**")
-      else if (trimmedLine.startsWith('*   **') && trimmedLine.endsWith('**')) {
+      } else if (trimmedLine.startsWith('*   **') && trimmedLine.endsWith('**')) {
         checkAndAddPage(8);
         doc.setFont("helvetica", "bold");
         doc.setFontSize(11);
@@ -153,9 +142,7 @@ export default function SummaryPage() {
         const text = trimmedLine.replace(/\*   \*\*|\*\*/g, '');
         doc.text(text, margin + 5, yPos);
         yPos += 6;
-      }
-      // Bullet points
-      else if (trimmedLine.startsWith('*   ')) {
+      } else if (trimmedLine.startsWith('*   ')) {
         checkAndAddPage(5);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
@@ -163,21 +150,18 @@ export default function SummaryPage() {
         const bulletContent = doc.splitTextToSize(trimmedLine.replace('*   ', ''), contentWidth - 10);
         doc.text('•', margin + 8, yPos);
         doc.text(bulletContent, margin + 12, yPos);
-        yPos += (bulletContent.length * 4) + 2;
-      }
-      // Regular text / description
-      else {
+        yPos += bulletContent.length * 4 + 2;
+      } else {
         checkAndAddPage(5 * doc.splitTextToSize(trimmedLine, contentWidth).length);
         doc.setFont("helvetica", "normal");
         doc.setFontSize(10);
         doc.setTextColor(80, 80, 80);
         const textLines = doc.splitTextToSize(trimmedLine, contentWidth);
         doc.text(textLines, margin, yPos);
-        yPos += (textLines.length * 4) + 2;
+        yPos += textLines.length * 4 + 2;
       }
     });
 
-    // In case the file ends with a code block
     drawCodeBlock();
 
     doc.save(`${state.title.replace(/\s+/g, '_').toLowerCase()}_cheat_sheet.pdf`);
@@ -201,7 +185,7 @@ export default function SummaryPage() {
         </CardHeader>
         <CardContent>
           <form action={formAction} className="space-y-4">
-             <Select
+            <Select
               name="contentId"
               onValueChange={setContentId}
               disabled={isPending || availableContent.length === 0}
@@ -225,10 +209,10 @@ export default function SummaryPage() {
               )}
               Generate Cheat Sheet
             </Button>
-             {availableContent.length === 0 && (
-                <p className="text-sm text-muted-foreground mt-4">
-                    You don't have any content in your library. Please <a href="/upload" className="underline">upload content</a> to generate a study guide.
-                </p>
+            {availableContent.length === 0 && (
+              <p className="text-sm text-muted-foreground mt-4">
+                You don't have any content in your library. Please <a href="/upload" className="underline">upload content</a> to generate a study guide.
+              </p>
             )}
           </form>
         </CardContent>
@@ -246,7 +230,7 @@ export default function SummaryPage() {
         <Card className="border-destructive">
           <CardHeader>
             <CardTitle className="text-destructive">Error</CardTitle>
-          </Header>
+          </CardHeader>
           <CardContent>
             <p>{state.error}</p>
           </CardContent>

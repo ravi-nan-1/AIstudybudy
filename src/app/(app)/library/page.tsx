@@ -1,4 +1,6 @@
-import { MOCK_CONTENT } from "@/lib/content";
+"use client";
+
+import { useContent } from "@/context/content-context";
 import {
   Card,
   CardContent,
@@ -18,7 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function LibraryPage() {
-  const content = MOCK_CONTENT;
+  const { content, removeContent } = useContent();
 
   return (
     <div className="flex flex-col gap-8">
@@ -36,7 +38,9 @@ export default function LibraryPage() {
             <p className="text-muted-foreground">
               Upload some content to get started!
             </p>
-            <Button className="mt-4">Upload Content</Button>
+            <Button className="mt-4" asChild>
+              <a href="/upload">Upload Content</a>
+            </Button>
           </CardContent>
         </Card>
       ) : (
@@ -57,7 +61,7 @@ export default function LibraryPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem>View</DropdownMenuItem>
-                      <DropdownMenuItem>Delete</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => removeContent(item.id)}>Delete</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

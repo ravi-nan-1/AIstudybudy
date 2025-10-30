@@ -12,26 +12,69 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Globe, UploadCloud } from "lucide-react";
-import { useState } from "react";
+import { Globe, UploadCloud, FileText, Youtube } from "lucide-react";
+import { useState, useContext, useRef } from "react";
+import { useContent, type Content } from "@/context/content-context";
+import { MOCK_CONTENT } from "@/lib/content";
 
 export default function UploadPage() {
   const { toast } = useToast();
+  const { addContent } = useContent();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const urlInputRef = useRef<HTMLInputElement>(null);
 
-  // Mock submission handler
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>, type: 'file' | 'url') => {
     event.preventDefault();
     setIsSubmitting(true);
+    
+    let newContent: Omit<Content, 'id' | 'createdAt'> | null = null;
+    
+    if (type === 'file' && fileInputRef.current?.files?.[0]) {
+        const file = fileInputRef.current.files[0];
+        newContent = {
+            title: file.name,
+            type: 'PDF',
+            source: file.name,
+            description: `A file uploaded by the user.`,
+            fullText: `Mock full text for ${file.name}. This would be extracted from the file.`,
+            icon: FileText,
+        };
+    } else if (type === 'url' && urlInputRef.current?.value) {
+        const url = urlInputRef.current.value;
+        const isYoutube = url.includes('youtube.com') || url.includes('youtu.be');
+        newContent = {
+            title: `Content from ${url.substring(0, 30)}...`,
+            type: isYoutube ? 'YouTube' : 'URL',
+            source: url,
+            description: `Content fetched from a URL.`,
+            fullText: `Mock full text for content from ${url}. This would be scraped from the URL.`,
+            icon: isYoutube ? Youtube : Globe,
+        };
+    }
+
     // Simulate network request
     await new Promise(resolve => setTimeout(resolve, 1500));
 
-    toast({
-      title: "Content Uploaded",
-      description: "Your content has been successfully added to the library.",
-    });
+    if (newContent) {
+      addContent({
+        ...newContent,
+        id: Date.now().toString(),
+        createdAt: new Date().toISOString(),
+      });
+
+      toast({
+        title: "Content Uploaded",
+        description: "Your content has been successfully added to the library.",
+      });
+    } else {
+       toast({
+        variant: "destructive",
+        title: "Upload Failed",
+        description: "Please select a file or provide a URL.",
+      });
+    }
     
-    // Reset form or state here if needed
     (event.target as HTMLFormElement).reset();
     setIsSubmitting(false);
   };
@@ -65,7 +108,7 @@ export default function UploadPage() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="file">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={(e) => handleSubmit(e, 'file')}>
                 <Card className="border-dashed mt-4">
                   <CardContent className="p-6 text-center">
                     <div className="space-y-2">
@@ -76,7 +119,7 @@ export default function UploadPage() {
                       <p className="text-xs text-muted-foreground">
                         PDF, MP3, MP4, etc.
                       </p>
-                      <Input id="file-upload" type="file" className="hidden" />
+                      <Input id="file-upload" type="file" className="hidden" ref={fileInputRef}/>
                     </div>
                   </CardContent>
                 </Card>
@@ -86,13 +129,14 @@ export default function UploadPage() {
               </form>
             </TabsContent>
             <TabsContent value="url">
-              <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+              <form onSubmit={(e) => handleSubmit(e, 'url')} className="space-y-4 mt-4">
                 <div className="space-y-2">
                   <Label htmlFor="url">Web or YouTube URL</Label>
                   <Input
                     id="url"
                     placeholder="https://example.com"
                     required
+                    ref={urlInputRef}
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={isSubmitting}>

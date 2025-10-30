@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { summarizeUploadedContent } from "@/ai/flows/summarize-uploaded-content";
-import { MOCK_CONTENT } from "@/lib/content";
+import { useContent } from "@/context/content-context";
 import {
   Card,
   CardContent,
@@ -27,6 +27,7 @@ type State = {
 };
 
 export default function SummaryPage() {
+  const { content: availableContent } = useContent();
   const [contentId, setContentId] = useState<string | null>(null);
 
   const [state, formAction, isPending] = useActionState(
@@ -35,7 +36,7 @@ export default function SummaryPage() {
       if (!id) {
         return { summary: null, error: "Please select a content to summarize." };
       }
-      const contentToSummarize = MOCK_CONTENT.find((c) => c.id === id);
+      const contentToSummarize = availableContent.find((c) => c.id === id);
       if (!contentToSummarize) {
         return { summary: null, error: "Content not found." };
       }
@@ -74,13 +75,13 @@ export default function SummaryPage() {
             <Select
               name="contentId"
               onValueChange={setContentId}
-              disabled={isPending}
+              disabled={isPending || availableContent.length === 0}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select content..." />
               </SelectTrigger>
               <SelectContent>
-                {MOCK_CONTENT.map((content) => (
+                {availableContent.map((content) => (
                   <SelectItem key={content.id} value={content.id}>
                     {content.title}
                   </SelectItem>
@@ -124,7 +125,7 @@ export default function SummaryPage() {
             <CardTitle>Summary</CardTitle>
             <CardDescription>
               Summary for:{" "}
-              {MOCK_CONTENT.find((c) => c.id === contentId)?.title}
+              {availableContent.find((c) => c.id === contentId)?.title}
             </CardDescription>
           </CardHeader>
           <CardContent>

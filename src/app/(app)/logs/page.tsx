@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from "react";
 import { showDetailedLearningLogs } from "@/ai/flows/show-detailed-learning-logs";
-import { MOCK_CONTENT } from "@/lib/content";
+import { useContent } from "@/context/content-context";
 import {
   Card,
   CardContent,
@@ -27,6 +27,7 @@ type State = {
 };
 
 export default function LogsPage() {
+  const { content: availableContent } = useContent();
   const [contentId, setContentId] = useState<string | null>(null);
 
   const [state, formAction, isPending] = useActionState(
@@ -68,13 +69,13 @@ export default function LogsPage() {
             <Select
               name="contentId"
               onValueChange={setContentId}
-              disabled={isPending}
+              disabled={isPending || availableContent.length === 0}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select content..." />
               </SelectTrigger>
               <SelectContent>
-                {MOCK_CONTENT.map((content) => (
+                {availableContent.map((content) => (
                   <SelectItem key={content.id} value={content.id}>
                     {content.title}
                   </SelectItem>
@@ -118,7 +119,7 @@ export default function LogsPage() {
             <CardTitle>Detailed Logs</CardTitle>
             <CardDescription>
               Showing logs for:{" "}
-              {MOCK_CONTENT.find((c) => c.id === contentId)?.title}
+              {availableContent.find((c) => c.id === contentId)?.title}
             </CardDescription>
           </CardHeader>
           <CardContent>

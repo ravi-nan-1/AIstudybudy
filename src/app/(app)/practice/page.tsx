@@ -2,7 +2,7 @@
 
 import { useActionState, useEffect, useState, useRef } from "react";
 import { generatePracticeQuiz, type GeneratePracticeQuizOutput } from "@/ai/flows/generate-practice-quiz";
-import { MOCK_CONTENT, type Content } from "@/lib/content";
+import { useContent, type Content } from "@/context/content-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -16,6 +16,7 @@ type QuizState = "setup" | "loading" | "active" | "finished";
 type Question = GeneratePracticeQuizOutput["quiz"][0];
 
 export default function PracticePage() {
+  const { content: MOCK_CONTENT } = useContent();
   const [quizState, setQuizState] = useState<QuizState>("setup");
   const [selectedContent, setSelectedContent] = useState<Content | null>(null);
   const [numQuestions, setNumQuestions] = useState("10");
@@ -119,7 +120,7 @@ export default function PracticePage() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="contentId">Content</Label>
-                <Select name="contentId" required>
+                <Select name="contentId" required disabled={MOCK_CONTENT.length === 0}>
                   <SelectTrigger id="contentId"><SelectValue placeholder="Select content..." /></SelectTrigger>
                   <SelectContent>{MOCK_CONTENT.map((c) => <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>)}</SelectContent>
                 </Select>
@@ -138,7 +139,7 @@ export default function PracticePage() {
                {state?.error && <Alert variant="destructive"><AlertTitle>Error</AlertTitle><AlertDescription>{state.error}</AlertDescription></Alert>}
             </CardContent>
             <CardFooter>
-              <Button type="submit" disabled={isPending} className="w-full">
+              <Button type="submit" disabled={isPending || MOCK_CONTENT.length === 0} className="w-full">
                 {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ClipboardCheck className="mr-2 h-4 w-4" />}
                 Start Quiz
               </Button>

@@ -35,7 +35,7 @@ const prompt = ai.definePrompt({
   name: 'summarizeUploadedContentPrompt',
   input: {schema: SummarizeUploadedContentInputSchema},
   output: {schema: SummarizeUploadedContentOutputSchema},
-  prompt: `Summarize the following content to help students quickly grasp the key information:\n\nContent: {{{content}}}`,
+  prompt: `You are an expert summarizer. Summarize the following content to help students quickly grasp the key information. The output must be a JSON object with a "summary" field containing the summarized text.\n\nContent: {{{content}}}`,
 });
 
 const summarizeUploadedContentFlow = ai.defineFlow(

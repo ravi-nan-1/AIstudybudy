@@ -35,7 +35,7 @@ const prompt = ai.definePrompt({
   name: 'summarizeUploadedContentPrompt',
   input: {schema: SummarizeUploadedContentInputSchema},
   output: {schema: SummarizeUploadedContentOutputSchema},
-  prompt: `You are an expert summarizer. Summarize the following content to help students quickly grasp the key information. The output must be a JSON object with a "summary" field containing the summarized text.\n\nContent: {{{content}}}`,
+  prompt: `You are an expert at creating detailed study guides. Create a comprehensive "cheat sheet" summary of the following content. The summary should cover all key aspects, concepts, and important details in a structured and easy-to-digest format, such as using bullet points or numbered lists for clarity. The output must be a JSON object with a "summary" field containing the detailed cheat sheet.\n\nContent: {{{content}}}`,
 });
 
 const summarizeUploadedContentFlow = ai.defineFlow(

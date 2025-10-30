@@ -19,7 +19,8 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Loader2, FileText } from "lucide-react";
+import { Loader2, FileText, Download } from "lucide-react";
+import jsPDF from "jspdf";
 
 type State = {
   summary: string | null;
@@ -52,6 +53,23 @@ export default function SummaryPage() {
     },
     { summary: null, error: null }
   );
+
+  const handleDownloadPdf = () => {
+    if (!state.summary || !contentId) return;
+    const content = availableContent.find((c) => c.id === contentId);
+    if (!content) return;
+
+    const doc = new jsPDF();
+    
+    doc.setFont("helvetica", "bold");
+    doc.text(`Summary: ${content.title}`, 10, 10);
+    
+    doc.setFont("helvetica", "normal");
+    const splitText = doc.splitTextToSize(state.summary, 180);
+    doc.text(splitText, 10, 20);
+    
+    doc.save(`${content.title.replace(/\s+/g, '_').toLowerCase()}_summary.pdf`);
+  };
 
   return (
     <div className="space-y-8">
@@ -121,16 +139,22 @@ export default function SummaryPage() {
 
       {state.summary && !isPending && (
         <Card>
-          <CardHeader>
-            <CardTitle>Summary</CardTitle>
-            <CardDescription>
-              Summary for:{" "}
-              {availableContent.find((c) => c.id === contentId)?.title}
-            </CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Summary</CardTitle>
+              <CardDescription>
+                Summary for:{" "}
+                {availableContent.find((c) => c.id === contentId)?.title}
+              </CardDescription>
+            </div>
+            <Button variant="outline" onClick={handleDownloadPdf}>
+              <Download className="mr-2 h-4 w-4" />
+              Download as PDF
+            </Button>
           </CardHeader>
           <CardContent>
             <ScrollArea className="h-72 w-full rounded-md border p-4 bg-muted/50">
-              <p className="text-sm">{state.summary}</p>
+              <p className="text-sm whitespace-pre-wrap">{state.summary}</p>
             </ScrollArea>
           </CardContent>
         </Card>

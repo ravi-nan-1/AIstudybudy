@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useActionState, useEffect, useState, useRef } from "react";
@@ -10,7 +11,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Loader2, ClipboardCheck, Timer, CheckCircle, XCircle } from "lucide-react";
+import { Loader2, ClipboardCheck, Timer, CheckCircle, XCircle, ArrowRight, CornerDownLeft } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type QuizState = "setup" | "loading" | "active" | "finished";
 type Question = GeneratePracticeQuizOutput["quiz"][0];
@@ -22,7 +25,7 @@ export default function PracticePage() {
   const [numQuestions, setNumQuestions] = useState("10");
   const [questions, setQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [userAnswers, setUserAnswers] = useState<string[]>([]);
+  const [userAnswers, setUserAnswers] = useState<(string | null)[]>([]);
   const [score, setScore] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -41,9 +44,10 @@ export default function PracticePage() {
 
       try {
         const result = await generatePracticeQuiz({ content: content.fullText, numQuestions: num });
-        setQuestions(result.quiz);
-        setUserAnswers(new Array(result.quiz.length).fill(null));
-        setTimeLeft(result.quiz.length * 60); // 1 minute per question
+        const quizQuestions = result.quiz || [];
+        setQuestions(quizQuestions);
+        setUserAnswers(new Array(quizQuestions.length).fill(null));
+        setTimeLeft(quizQuestions.length * 60); // 1 minute per question
         setCurrentQuestionIndex(0);
         setQuizState("active");
         return { error: null };
@@ -85,6 +89,10 @@ export default function PracticePage() {
     setScore(correctAnswers);
     setQuizState("finished");
     if (timerRef.current) clearInterval(timerRef.current);
+  };
+
+  const handleQuestionNavigation = (index: number) => {
+    setCurrentQuestionIndex(index);
   };
 
   const handleNextQuestion = () => {
@@ -152,43 +160,64 @@ export default function PracticePage() {
 
   if (quizState === "active" && questions.length > 0) {
     const currentQuestion = questions[currentQuestionIndex];
-    const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+    const progress = (((userAnswers.filter(a => a !== null).length) / questions.length) * 100);
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
 
     return (
-      <div className="max-w-4xl mx-auto w-full space-y-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-              <div>
-                <CardTitle>Quiz in Progress</CardTitle>
-                <CardDescription>{selectedContent?.title}</CardDescription>
-              </div>
-              <div className="flex items-center gap-2 text-lg font-semibold text-primary">
-                <Timer className="h-5 w-5" />
-                <span>{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</span>
-              </div>
-          </CardHeader>
-          <CardContent>
-            <Progress value={progress} className="mb-6" />
-            <div className="space-y-4">
-              <p className="font-semibold text-lg">{currentQuestionIndex + 1}. {currentQuestion.question}</p>
-              <RadioGroup value={userAnswers[currentQuestionIndex]} onValueChange={handleAnswerChange} className="space-y-2">
-                {currentQuestion.options.map((option, index) => (
-                  <div key={index} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-muted has-[[data-state=checked]]:border-primary transition-colors">
-                    <RadioGroupItem value={option} id={`q-${currentQuestionIndex}-o-${index}`} />
-                    <Label htmlFor={`q-${currentQuestionIndex}-o-${index}`} className="flex-1 cursor-pointer">{option}</Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-          </CardContent>
-           <CardFooter>
-             <Button onClick={handleNextQuestion} className="ml-auto">
-                {currentQuestionIndex < questions.length - 1 ? "Next Question" : "Finish Quiz"}
-            </Button>
-          </CardFooter>
-        </Card>
+      <div className="grid md:grid-cols-[200px_1fr] gap-8 items-start">
+        <aside className="w-full space-y-4">
+            <h3 className="font-semibold text-lg">Questions</h3>
+             <ScrollArea className="h-96 pr-4">
+                 <div className="flex flex-col gap-2">
+                    {questions.map((_, index) => (
+                        <Button 
+                            key={index}
+                            variant={index === currentQuestionIndex ? "default" : userAnswers[index] !== null ? "secondary" : "outline"}
+                            className="w-full justify-start"
+                            onClick={() => handleQuestionNavigation(index)}
+                        >
+                            Question {index + 1}
+                        </Button>
+                    ))}
+                 </div>
+            </ScrollArea>
+        </aside>
+
+        <main className="max-w-4xl mx-auto w-full space-y-6">
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                        <CardTitle>Quiz in Progress</CardTitle>
+                        <CardDescription>{selectedContent?.title}</CardDescription>
+                    </div>
+                    <div className="flex items-center gap-2 text-lg font-semibold text-primary">
+                        <Timer className="h-5 w-5" />
+                        <span>{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}</span>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <Progress value={progress} className="mb-6" />
+                    <div className="space-y-4">
+                        <p className="font-semibold text-lg">{currentQuestionIndex + 1}. {currentQuestion.question}</p>
+                        <RadioGroup value={userAnswers[currentQuestionIndex] ?? undefined} onValueChange={handleAnswerChange} className="space-y-2">
+                            {currentQuestion.options.map((option, index) => (
+                                <div key={index} className="flex items-center space-x-2 rounded-md border p-3 hover:bg-muted has-[[data-state=checked]]:border-primary transition-colors">
+                                    <RadioGroupItem value={option} id={`q-${currentQuestionIndex}-o-${index}`} />
+                                    <Label htmlFor={`q-${currentQuestionIndex}-o-${index}`} className="flex-1 cursor-pointer">{option}</Label>
+                                </div>
+                            ))}
+                        </RadioGroup>
+                    </div>
+                </CardContent>
+                <CardFooter>
+                    <Button onClick={handleNextQuestion} className="ml-auto">
+                        {currentQuestionIndex < questions.length - 1 ? "Next Question" : "Finish Quiz"}
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                </CardFooter>
+            </Card>
+        </main>
       </div>
     );
   }
@@ -198,24 +227,65 @@ export default function PracticePage() {
      return (
         <div className="flex flex-col gap-8 items-center">
             <h1 className="text-3xl font-bold tracking-tight">Quiz Results</h1>
-            <Card className="w-full max-w-md text-center">
-                <CardHeader>
-                    <CardTitle>Your Score</CardTitle>
-                    <CardDescription>Results for "{selectedContent?.title}"</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className={`text-6xl font-bold ${percentage >= 70 ? 'text-chart-2' : percentage >= 40 ? 'text-accent' : 'text-destructive'}`}>
-                        {percentage}%
-                    </div>
-                    <div className="flex justify-around">
-                      <div className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-chart-2"/> Correct: {score}</div>
-                      <div className="flex items-center gap-2"><XCircle className="h-5 w-5 text-destructive"/> Incorrect: {questions.length - score}</div>
-                    </div>
-                </CardContent>
-                <CardFooter>
-                    <Button onClick={restartQuiz} className="w-full">Try Again</Button>
-                </CardFooter>
-            </Card>
+            <div className="grid md:grid-cols-2 gap-8 w-full max-w-4xl">
+              <Card className="w-full text-center h-fit">
+                  <CardHeader>
+                      <CardTitle>Your Score</CardTitle>
+                      <CardDescription>Results for "{selectedContent?.title}"</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                      <div className={cn(
+                        'text-6xl font-bold',
+                        percentage >= 70 ? 'text-chart-2' : percentage >= 40 ? 'text-accent' : 'text-destructive'
+                      )}>
+                          {percentage}%
+                      </div>
+                      <div className="flex justify-around">
+                        <div className="flex items-center gap-2"><CheckCircle className="h-5 w-5 text-chart-2"/> Correct: {score}</div>
+                        <div className="flex items-center gap-2"><XCircle className="h-5 w-5 text-destructive"/> Incorrect: {questions.length - score}</div>
+                      </div>
+                  </CardContent>
+                  <CardFooter>
+                      <Button onClick={restartQuiz} className="w-full">
+                        <CornerDownLeft className="mr-2 h-4 w-4"/>
+                        Try Again
+                      </Button>
+                  </CardFooter>
+              </Card>
+
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold">Review Your Answers</h3>
+                <ScrollArea className="h-[60vh] pr-4">
+                  <div className="space-y-6">
+                    {questions.map((q, index) => {
+                      const userAnswer = userAnswers[index];
+                      const isCorrect = q.answer === userAnswer;
+                      return (
+                        <Card key={index} className={cn(
+                          "w-full",
+                          isCorrect ? "border-chart-2" : "border-destructive"
+                        )}>
+                          <CardHeader>
+                            <CardTitle className="text-lg flex items-start gap-2">
+                              <span>{index + 1}. {q.question}</span>
+                              {isCorrect ? (
+                                <CheckCircle className="h-5 w-5 text-chart-2 shrink-0"/>
+                              ) : (
+                                <XCircle className="h-5 w-5 text-destructive shrink-0"/>
+                              )}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="space-y-2 text-sm">
+                            <p>Your answer: <span className={cn("font-semibold", !isCorrect && "text-destructive")}>{userAnswer || "Not answered"}</span></p>
+                            {!isCorrect && <p>Correct answer: <span className="font-semibold text-chart-2">{q.answer}</span></p>}
+                          </CardContent>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                </ScrollArea>
+              </div>
+            </div>
         </div>
      );
   }
@@ -227,3 +297,5 @@ export default function PracticePage() {
     </div>
   );
 }
+
+    

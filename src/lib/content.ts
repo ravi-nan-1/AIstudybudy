@@ -37,11 +37,128 @@ export const MOCK_CONTENT: Content[] = [
   },
   {
     id: '3',
-    title: 'Quantum Mechanics Explained',
+    title: 'React Cheat Sheet (from devhints.io)',
     type: 'URL',
-    source: 'https://en.wikipedia.org/wiki/Quantum_mechanics',
-    description: 'A Wikipedia article detailing the fundamental principles of quantum mechanics.',
-    fullText: 'Quantum mechanics is a fundamental theory in physics that provides a description of the physical properties of nature at the scale of atoms and subatomic particles. It is the foundation of all quantum physics including quantum chemistry, quantum field theory, quantum technology, and quantum information science. Key concepts include quantization of energy, wave-particle duality, and the uncertainty principle.',
+    source: 'https://devhints.io/react',
+    description: 'A React cheat sheet from devhints.io.',
+    fullText: `### Components
+\`\`\`jsx
+class MyComponent extends React.Component {
+  render () {
+    return <div/>
+  }
+}
+\`\`\`
+
+\`\`\`jsx
+const MyComponent = ({ name }) => (
+  <h1>Hello, {name}!</h1>
+)
+\`\`\`
+
+### Properties
+\`\`\`jsx
+<Video fullscreen={true} />
+\`\`\`
+
+prop-types:
+\`\`\`js
+MyComponent.propTypes = {
+  email:      PropTypes.string.isRequired,
+  seats:      PropTypes.number.isRequired,
+  settings:   PropTypes.object,
+  isClosed:   PropTypes.bool,
+  onOpen:     PropTypes.func,
+  // and more
+}
+\`\`\`
+
+Default props:
+\`\`\`js
+MyComponent.defaultProps = {
+  isClosed: true
+}
+\`\`\`
+
+Other properties:
+\`\`\`jsx
+<MyComponent
+  {...this.props}
+  />
+\`\`\`
+
+Children:
+\`\`\`jsx
+<Alert>
+  <h4>You have been alerted</h4>
+</Alert>
+\`\`\`
+
+\`\`\`jsx
+// this.props.children
+\`\`\`
+
+### State
+\`\`\`jsx
+class MyComponent extends React.Component {
+  constructor (props) {
+    super(props)
+    this.state = { visible: true }
+  }
+
+  render () {
+    return <div/>
+  }
+}
+\`\`\`
+
+Setting state:
+\`\`\`js
+this.setState({ visible: false })
+\`\`\`
+
+\`\`\`js
+this.setState((prevState, props) => {
+  return { counter: prevState.counter + 1 }
+})
+\`\`\`
+
+### Events
+\`\`\`jsx
+class MyComponent extends React.Component {
+  render () {
+    return <a href='#' onClick={this.myClick}>Link</a>
+  }
+
+  myClick (e) {
+    e.preventDefault()
+  }
+}
+\`\`\`
+
+### Other component APIs
+Force render:
+\`\`\`js
+this.forceUpdate()
+\`\`\`
+
+### Lifecycle
+Mounting:
+* constructor()
+* componentWillMount()
+* render()
+* componentDidMount()
+
+Updating:
+* componentWillReceiveProps()
+* shouldComponentUpdate()
+* componentWillUpdate()
+* render()
+* componentDidUpdate()
+
+Unmounting:
+* componentWillUnmount()
+`,
     createdAt: '2023-10-24T09:15:00Z',
     icon: Globe,
   },

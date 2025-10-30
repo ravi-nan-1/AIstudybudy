@@ -1,3 +1,46 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "dashboard-hero",
+      "description": "A person studying with a laptop.",
+      "imageUrl": "https://images.unsplash.com/photo-1448932223592-d1fc686e76ea?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdHVkZW50JTIwbGFwdG9wfGVufDB8fHx8MTc2MTc1ODYxMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "student laptop"
+    },
+    {
+      "id": "dashboard-card-chat",
+      "description": "Abstract representation of a chat bubble.",
+      "imageUrl": "https://images.unsplash.com/photo-1724921983434-513c0b411e88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxjaGF0JTIwYnViYmxlfGVufDB8fHx8MTc2MTgzNDgxM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "chat bubble"
+    },
+    {
+      "id": "dashboard-card-upload",
+      "description": "An upload cloud icon.",
+      "imageUrl": "https://images.unsplash.com/photo-1648040451287-14b9127eb4b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHx1cGxvYWQlMjBjbG91ZHxlbnwwfHx8fDE3NjE4NDc1OTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "upload cloud"
+    },
+    {
+      "id": "dashboard-card-library",
+      "description": "A bookshelf filled with books.",
+      "imageUrl": "https://images.unsplash.com/photo-1582087152266-3fbaf83bc952?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxib29rc2hlbGYlMjBsaWJyYXJ5fGVufDB8fHx8MTc2MTg0NzU5OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "bookshelf library"
+    },
+    {
+      "id": "dashboard-card-summary",
+      "description": "A document with highlighted text.",
+      "imageUrl": "https://images.unsplash.com/photo-1600267204091-5c1ab8b10c02?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxkb2N1bWVudCUyMHN1bW1hcnl8ZW58MHx8fHwxNzYxODQ3NjAwfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "document summary"
+    },
+    {
+      "id": "dashboard-card-quiz",
+      "description": "A multiple choice quiz paper.",
+      "imageUrl": "https://images.unsplash.com/photo-1606326608690-4e0281b1e588?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxxdWl6JTIwcGFwZXJ8ZW58MHx8fHwxNzYxODM4MTY2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "quiz paper"
+    },
+    {
+      "id": "dashboard-card-logs",
+      "description": "A computer screen with lines of code.",
+      "imageUrl": "https://images.unsplash.com/photo-1720980741441-b00ae54be18a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxjb2RlJTIwbG9nc3xlbnwwfHx8fDE3NjE4NDc1OTl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "code logs"
+    }
+  ]
 }

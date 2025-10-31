@@ -37,13 +37,8 @@ const NAV_LINKS = [
 export function AppSidebar({ isMobile = false }: { isMobile?: boolean }) {
   const pathname = usePathname();
 
-  return (
-    <aside
-      className={cn(
-        "hidden md:flex md:flex-col md:border-r bg-card",
-        isMobile && "flex w-full"
-      )}
-    >
+  const content = (
+    <>
       <div className="flex h-16 items-center border-b px-4 lg:px-6 shrink-0">
         <Link href="/" className="flex items-center gap-2 font-semibold">
           <BookOpen className="h-6 w-6 text-primary" />
@@ -67,6 +62,20 @@ export function AppSidebar({ isMobile = false }: { isMobile?: boolean }) {
           ))}
         </nav>
       </ScrollArea>
+    </>
+  );
+
+  if (isMobile) {
+    return content;
+  }
+
+  return (
+    <aside
+      className={cn(
+        "hidden md:flex md:flex-col md:border-r bg-card"
+      )}
+    >
+      {content}
     </aside>
   );
 }

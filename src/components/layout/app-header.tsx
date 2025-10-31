@@ -19,7 +19,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { AppSidebar } from "./app-sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
@@ -48,7 +55,15 @@ export function AppHeader() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col p-0">
-          <AppSidebar isMobile />
+          <SheetHeader className="sr-only">
+            <SheetTitle>Navigation Menu</SheetTitle>
+            <SheetDescription>
+              Main navigation links for the application.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="flex-1">
+            <AppSidebar isMobile />
+          </div>
         </SheetContent>
       </Sheet>
 

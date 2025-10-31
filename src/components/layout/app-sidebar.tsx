@@ -40,7 +40,7 @@ export function AppSidebar({ isMobile = false }: { isMobile?: boolean }) {
     <aside
       className={cn(
         "hidden md:flex md:flex-col md:border-r bg-card",
-        isMobile && "flex"
+        isMobile && "flex w-full"
       )}
     >
       <div className="flex h-16 items-center border-b px-4 lg:px-6 shrink-0">
@@ -49,7 +49,7 @@ export function AppSidebar({ isMobile = false }: { isMobile?: boolean }) {
           <span>AI Study Buddy</span>
         </Link>
       </div>
-      <div className="flex-1">
+      <div className="flex-1 overflow-y-auto">
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4 py-4">
           {NAV_LINKS.map(({ href, label, icon: Icon }) => (
             <Link

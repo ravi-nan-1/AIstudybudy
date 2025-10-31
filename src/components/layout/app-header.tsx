@@ -61,9 +61,7 @@ export function AppHeader() {
               Main navigation links for the application.
             </SheetDescription>
           </SheetHeader>
-          <div className="flex-1">
-            <AppSidebar isMobile />
-          </div>
+          <AppSidebar isMobile />
         </SheetContent>
       </Sheet>
 

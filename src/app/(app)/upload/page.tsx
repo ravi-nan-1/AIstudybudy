@@ -12,17 +12,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Globe, UploadCloud, FileText, Youtube } from "lucide-react";
-import { useState, useContext, useRef } from "react";
+import { Globe, UploadCloud, FileText, Youtube, CheckCircle } from "lucide-react";
+import { useState, useRef, ChangeEvent } from "react";
 import { useContent, type Content } from "@/context/content-context";
-import { MOCK_CONTENT } from "@/lib/content";
 
 export default function UploadPage() {
   const { toast } = useToast();
   const { addContent } = useContent();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const urlInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      setSelectedFile(event.target.files[0]);
+    } else {
+      setSelectedFile(null);
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>, type: 'file' | 'url') => {
     event.preventDefault();
@@ -30,8 +38,8 @@ export default function UploadPage() {
     
     let newContent: Omit<Content, 'id' | 'createdAt'> | null = null;
     
-    if (type === 'file' && fileInputRef.current?.files?.[0]) {
-        const file = fileInputRef.current.files[0];
+    if (type === 'file' && selectedFile) {
+        const file = selectedFile;
         newContent = {
             title: file.name,
             type: 'PDF',
@@ -67,6 +75,7 @@ export default function UploadPage() {
         title: "Content Uploaded",
         description: "Your content has been successfully added to the library.",
       });
+      setSelectedFile(null);
     } else {
        toast({
         variant: "destructive",
@@ -119,11 +128,17 @@ export default function UploadPage() {
                       <p className="text-xs text-muted-foreground">
                         PDF, MP3, MP4, etc.
                       </p>
-                      <Input id="file-upload" type="file" className="hidden" ref={fileInputRef}/>
+                      <Input id="file-upload" type="file" className="hidden" ref={fileInputRef} onChange={handleFileChange} />
                     </div>
+                    {selectedFile && (
+                        <div className="mt-4 text-sm text-muted-foreground flex items-center justify-center gap-2">
+                            <CheckCircle className="h-4 w-4 text-green-500" />
+                            <span>{selectedFile.name}</span>
+                        </div>
+                    )}
                   </CardContent>
                 </Card>
-                <Button type="submit" className="w-full mt-4" disabled={isSubmitting}>
+                <Button type="submit" className="w-full mt-4" disabled={isSubmitting || !selectedFile}>
                     {isSubmitting ? "Uploading..." : "Upload File"}
                 </Button>
               </form>

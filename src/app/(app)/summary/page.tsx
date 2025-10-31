@@ -67,10 +67,6 @@ export default function SummaryPage() {
     const contentWidth = pageWidth - margin * 2;
     let yPos = 20;
 
-    doc.addFont("courier", "normal", "Courier");
-    doc.addFont("helvetica", "normal", "Helvetica");
-    doc.addFont("helvetica", "bold", "Helvetica-Bold");
-
     const checkAndAddPage = (spaceNeeded: number) => {
       if (yPos + spaceNeeded > pageHeight - margin) {
         doc.addPage();

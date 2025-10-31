@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const NAV_LINKS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -49,7 +50,7 @@ export function AppSidebar({ isMobile = false }: { isMobile?: boolean }) {
           <span>AI Study Buddy</span>
         </Link>
       </div>
-      <div className="flex-1 overflow-y-auto">
+      <ScrollArea className="flex-1">
         <nav className="grid items-start px-2 text-sm font-medium lg:px-4 py-4">
           {NAV_LINKS.map(({ href, label, icon: Icon }) => (
             <Link
@@ -65,7 +66,7 @@ export function AppSidebar({ isMobile = false }: { isMobile?: boolean }) {
             </Link>
           ))}
         </nav>
-      </div>
+      </ScrollArea>
     </aside>
   );
 }

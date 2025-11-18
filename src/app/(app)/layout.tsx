@@ -1,5 +1,6 @@
 import { AppHeader } from "@/components/layout/app-header";
 import { AppSidebar } from "@/components/layout/app-sidebar";
+import { AppFooter } from "@/components/layout/app-footer";
 import { ContentProvider } from "@/context/content-context";
 
 export default function AppLayout({
@@ -16,6 +17,7 @@ export default function AppLayout({
           <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6 bg-background">
             {children}
           </main>
+          <AppFooter />
         </div>
       </div>
     </ContentProvider>

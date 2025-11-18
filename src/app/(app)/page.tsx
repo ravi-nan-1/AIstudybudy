@@ -8,6 +8,7 @@ import {
   ClipboardCheck,
   FileClock,
   ArrowRight,
+  Check,
 } from "lucide-react";
 import {
   Card,
@@ -19,6 +20,18 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { PlaceHolderImages } from "@/lib/placeholder-images";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const features = [
   {
@@ -30,19 +43,22 @@ const features = [
   },
   {
     title: "Upload Content",
-    description: "Add your study materials. This AI PDF tutor can learn from PDFs, videos, and web links.",
+    description:
+      "Add your study materials. This AI PDF tutor can learn from PDFs, videos, and web links.",
     href: "/upload",
     icon: Upload,
   },
   {
     title: "Content Library",
-    description: "Browse and manage all your uploaded study materials in one place.",
+    description:
+      "Browse and manage all your uploaded study materials in one place.",
     href: "/library",
     icon: Library,
   },
   {
     title: "Generate Summary",
-    description: "Use the AI summary generator to summarize PDF online and grasp key points quickly.",
+    description:
+      "Use the AI summary generator to summarize PDF online and grasp key points quickly.",
     href: "/summary",
     icon: FileText,
   },
@@ -55,13 +71,44 @@ const features = [
   },
   {
     title: "Learning Logs",
-    description: "Review what your AI learning companion has learned from your materials.",
+    description:
+      "Review what your AI learning companion has learned from your materials.",
     href: "/logs",
     icon: FileClock,
   },
 ];
 
 const heroImage = PlaceHolderImages.find((img) => img.id === "dashboard-hero");
+
+const faqItems = [
+  {
+    question: "Is this AI Tutor free to use?",
+    answer: "Yes, AI Tutor is completely free with no sign-up required.",
+  },
+  {
+    question: "Can I upload PDFs?",
+    answer: "Yes — AI reads and understands your PDF fully.",
+  },
+  {
+    question: "Can I input website links?",
+    answer:
+      "Yes — the tool scrapes webpage content and extracts the important information.",
+  },
+  {
+    question: "Does it support quiz generation?",
+    answer:
+      "Yes — AI can generate 10, 20, or 30 questions based on your content.",
+  },
+  {
+    question: "Is my data safe?",
+    answer: "All files are processed securely and deleted automatically.",
+  },
+  {
+    question: "Can I chat with the AI?",
+    answer:
+      "Yes — chat mode allows you to ask questions based on your uploaded content.",
+  },
+];
 
 export default function DashboardPage() {
   return (
@@ -103,7 +150,11 @@ export default function DashboardPage() {
 
       <div className="text-center">
         <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
-          Free AI Tutor that learns from your PDFs and website links. Generate summaries, quizzes (10/20/30 questions), and chat with an AI that understands your uploaded content. An AI study helper, free and secure. This AI tool for students can be your primary AI tutor from PDF or an AI tutor from a website link.
+          Free AI Tutor that learns from your PDFs and website links. Generate
+          summaries, quizzes (10/20/30 questions), and chat with an AI that
+          understands your uploaded content. An AI study helper, free and
+          secure. This AI tool for students can be your primary AI tutor from
+          PDF or an AI tutor from a website link.
         </p>
       </div>
 
@@ -139,6 +190,360 @@ export default function DashboardPage() {
             </Card>
           ))}
         </div>
+      </section>
+
+      <section>
+        <Tabs defaultValue="what-is" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-6 h-auto">
+            <TabsTrigger value="what-is">What is AI Tutor?</TabsTrigger>
+            <TabsTrigger value="how-it-works">How It Works</TabsTrigger>
+            <TabsTrigger value="features">Features &amp; Benefits</TabsTrigger>
+            <TabsTrigger value="use-cases">Use-Cases</TabsTrigger>
+            <TabsTrigger value="guide">Step-By-Step Guide</TabsTrigger>
+            <TabsTrigger value="faq">FAQ</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="what-is" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>What is AI Tutor?</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 text-muted-foreground">
+                <p>
+                  AI Tutor is an intelligent study assistant that reads and
+                  understands your content — PDFs, website links, research
+                  papers, textbooks, and more.
+                </p>
+                <p>
+                  It summarizes, explains, quizzes you, and allows you to chat
+                  with an AI that fully understands the uploaded content.
+                </p>
+                <p>
+                  It’s like having a personal private tutor available 24/7,
+                  powered by smart AI.
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="how-it-works" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>How It Works</CardTitle>
+                <CardDescription>
+                  AI Tutor processes your content using advanced machine
+                  learning models:
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <h4 className="font-semibold text-lg mb-2">
+                    1. Upload Your Content
+                  </h4>
+                  <p className="text-muted-foreground">
+                    Upload: PDF files, URL links, Articles, Notes, Documents.
+                    The system reads and extracts text, headings, images, and
+                    structure.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-2">
+                    2. AI Reads &amp; Understands Everything
+                  </h4>
+                  <p className="text-muted-foreground">
+                    The tool analyzes the entire document using: Text
+                    segmentation, Topic modeling, Content mapping,
+                    Context-aware understanding.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-2">
+                    3. Choose What You Want
+                  </h4>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div className="flex flex-col gap-2 p-4 rounded-lg bg-muted/50">
+                      <h5 className="font-semibold">
+                        <Check className="inline-block mr-2 h-5 w-5 text-green-500" />
+                        Generate Summary
+                      </h5>
+                      <p className="text-sm text-muted-foreground">
+                        AI creates a clean, easy-to-understand summary of your
+                        content. Perfect for revision, studying faster, or
+                        previewing chapters.
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-2 p-4 rounded-lg bg-muted/50">
+                      <h5 className="font-semibold">
+                        <Check className="inline-block mr-2 h-5 w-5 text-green-500" />
+                        Generate Quiz
+                      </h5>
+                      <p className="text-sm text-muted-foreground">
+                        You select 10, 20, or 30 questions. AI generates MCQs,
+                        true/false, and short answer questions based entirely on
+                        your uploaded content.
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-2 p-4 rounded-lg bg-muted/50">
+                      <h5 className="font-semibold">
+                        <Check className="inline-block mr-2 h-5 w-5 text-green-500" />
+                        Chat With AI
+                      </h5>
+                      <p className="text-sm text-muted-foreground">
+                        Ask anything like: “Explain this in simple words,”
+                        “Give examples,” “Create practice questions.” The AI
+                        responds based on your file only.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="features" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Features &amp; Benefits</CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <Check className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Smart Summaries</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Instant summaries that capture key ideas and important
+                      details.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <Check className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Quiz Generator</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Custom quizzes generated directly from the content you
+                      upload.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <Check className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">AI Chat</h4>
+                    <p className="text-sm text-muted-foreground">
+                      A conversational tutor that explains concepts,
+                      definitions, and examples.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <Check className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Free &amp; Easy</h4>
+                    <p className="text-sm text-muted-foreground">
+                      No account required. Use instantly.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <Check className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Secure</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Files are processed securely and never stored
+                      permanently.
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="bg-primary/10 p-3 rounded-full">
+                    <Check className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">
+                      Perfect for Students &amp; Professionals
+                    </h4>
+                    <p className="text-sm text-muted-foreground">
+                      Use it for notes, textbooks, assignments, reports,
+                      research, and more.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="use-cases" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Use-Cases</CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-6 md:grid-cols-2">
+                <div>
+                  <h4 className="font-semibold text-lg mb-2">Students</h4>
+                  <ul className="space-y-2 text-muted-foreground">
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Summarize textbook chapters</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Create quizzes for exam prep</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Understand complex topics</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Chat with AI to clear doubts</span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-2">Teachers</h4>
+                  <ul className="space-y-2 text-muted-foreground">
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Auto-generate quiz sets</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Create lesson summaries</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Build study guides</span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-2">
+                    Businesses / Offices
+                  </h4>
+                  <ul className="space-y-2 text-muted-foreground">
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Summarize reports</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Extract insights</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Train employees faster</span>
+                    </li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg mb-2">Researchers</h4>
+                  <ul className="space-y-2 text-muted-foreground">
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Summarize long papers</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Create question banks</span>
+                    </li>
+                    <li className="flex items-start">
+                      <Check className="w-4 h-4 mr-2 mt-1 shrink-0 text-green-500" />
+                      <span>Discuss findings with the AI</span>
+                    </li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="guide" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Step-By-Step Guide</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ol className="relative border-l border-gray-200 dark:border-gray-700">
+                  <li className="mb-10 ml-6">
+                    <span className="absolute flex items-center justify-center w-6 h-6 bg-primary/20 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-primary/90">
+                      1
+                    </span>
+                    <h3 className="flex items-center mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                      Upload Content
+                    </h3>
+                    <p className="text-base font-normal text-muted-foreground">
+                      Upload a PDF or paste a URL.
+                    </p>
+                  </li>
+                  <li className="mb-10 ml-6">
+                    <span className="absolute flex items-center justify-center w-6 h-6 bg-primary/20 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-primary/90">
+                      2
+                    </span>
+                    <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                      Choose Action
+                    </h3>
+                    <p className="text-base font-normal text-muted-foreground">
+                      Choose: Summary, Quiz, or Chat.
+                    </p>
+                  </li>
+                  <li className="mb-10 ml-6">
+                    <span className="absolute flex items-center justify-center w-6 h-6 bg-primary/20 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-primary/90">
+                      3
+                    </span>
+                    <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                      AI Processing
+                    </h3>
+                    <p className="text-base font-normal text-muted-foreground">
+                      Our AI processes your content instantly.
+                    </p>
+                  </li>
+                  <li className="ml-6">
+                    <span className="absolute flex items-center justify-center w-6 h-6 bg-primary/20 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-primary/90">
+                      4
+                    </span>
+                    <h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+                      Get Results
+                    </h3>
+                    <p className="text-base font-normal text-muted-foreground">
+                      Download your summary/quiz or start chatting.
+                    </p>
+                  </li>
+                </ol>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="faq" className="mt-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Frequently Asked Questions</CardTitle>
+                <CardDescription>
+                  Find answers to common questions about the AI Tutor.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {faqItems.map((item, index) => (
+                    <AccordionItem key={index} value={`item-${index}`}>
+                      <AccordionTrigger>{item.question}</AccordionTrigger>
+                      <AccordionContent>{item.answer}</AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </section>
     </div>
   );

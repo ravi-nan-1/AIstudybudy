@@ -87,6 +87,9 @@ export default function DashboardPage() {
             content, and let our AI create summaries, quizzes, and answer your
             questions.
           </p>
+          <p className="mt-4 text-sm md:text-base text-white/80 max-w-3xl drop-shadow-sm font-medium">
+            AI Tutor – Upload PDF & Websites | Summaries, Quizzes & Smart Chat
+          </p>
           <Button
             asChild
             className="mt-6 w-fit bg-accent hover:bg-accent/90 text-accent-foreground font-bold text-base md:text-lg py-6 px-8 rounded-full shadow-lg transition-transform hover:scale-105"

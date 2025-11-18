@@ -101,6 +101,14 @@ export default function DashboardPage() {
         </div>
       </section>
 
+      <div className="text-center">
+        <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
+          Free AI Tutor that learns from your PDFs and website links. Generate
+          summaries, quizzes (10/20/30 questions), and chat with an AI that
+          understands your uploaded content. Fast, accurate, and secure.
+        </p>
+      </div>
+
       <section>
         <h2 className="text-3xl font-bold tracking-tight mb-6">
           Explore Features

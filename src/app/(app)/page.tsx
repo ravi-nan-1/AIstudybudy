@@ -301,6 +301,7 @@ export default function DashboardPage() {
         </div>
       </section>
 
+      {/*
       <section>
         <h2 className="text-3xl font-bold tracking-tight text-center mb-8">Discover Our Tools</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8">
@@ -321,6 +322,7 @@ export default function DashboardPage() {
             ))}
         </div>
       </section>
+      */}
 
       <section>
         <Tabs defaultValue="what-is" className="w-full">

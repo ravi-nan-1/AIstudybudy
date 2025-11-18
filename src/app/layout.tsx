@@ -25,6 +25,31 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "name": "AI Tutor",
+              "applicationCategory": "EducationalApplication",
+              "operatingSystem": "Any",
+              "description": "Upload PDFs or website links to generate summaries, quizzes, and chat with an AI that understands your content.",
+              "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+              },
+              "featureList": [
+                "PDF summarizer",
+                "Quiz generator 10/20/30 questions",
+                "AI chat based on your uploaded content",
+                "Website content summarizer",
+                "Study assistant"
+              ]
+            })
+          }}
+        />
       </head>
       <body className="font-body antialiased">
         {children}

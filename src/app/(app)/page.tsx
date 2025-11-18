@@ -24,38 +24,38 @@ const features = [
   {
     title: "Chat and Learn",
     description:
-      "Ask questions and get detailed explanations from your AI tutor.",
+      "Use our AI chatbot for study. Ask questions and get detailed explanations from your AI tutor about your documents.",
     href: "/chat",
     icon: MessageCircle,
   },
   {
     title: "Upload Content",
-    description: "Add your study materials like PDFs, videos, and web links.",
+    description: "Add your study materials. This AI PDF tutor can learn from PDFs, videos, and web links.",
     href: "/upload",
     icon: Upload,
   },
   {
     title: "Content Library",
-    description: "Browse and manage all your uploaded study materials.",
+    description: "Browse and manage all your uploaded study materials in one place.",
     href: "/library",
     icon: Library,
   },
   {
     title: "Generate Summary",
-    description: "Get quick summaries of your documents to grasp key points.",
+    description: "Use the AI summary generator to summarize PDF online and grasp key points quickly.",
     href: "/summary",
     icon: FileText,
   },
   {
     title: "Practice Quiz",
     description:
-      "Test your knowledge with AI-generated quizzes from your content.",
+      "Use the AI quiz generator to test your knowledge and generate questions from text. A great AI exam preparation tool.",
     href: "/practice",
     icon: ClipboardCheck,
   },
   {
     title: "Learning Logs",
-    description: "Review what your AI tutor has learned from your materials.",
+    description: "Review what your AI learning companion has learned from your materials.",
     href: "/logs",
     icon: FileClock,
   },
@@ -80,10 +80,10 @@ export default function DashboardPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-10 text-white">
           <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight drop-shadow-md">
-            Welcome to your AI Study Buddy
+            Your AI Study Tool and Learning Assistant
           </h1>
           <p className="mt-2 text-lg md:text-xl text-white/90 max-w-3xl drop-shadow-sm">
-            Your personal AI partner to learn faster and smarter. Upload your
+            Your personal AI partner to study faster with AI. Upload your
             content, and let our AI create summaries, quizzes, and answer your
             questions.
           </p>
@@ -103,9 +103,7 @@ export default function DashboardPage() {
 
       <div className="text-center">
         <p className="text-lg text-muted-foreground max-w-4xl mx-auto">
-          Free AI Tutor that learns from your PDFs and website links. Generate
-          summaries, quizzes (10/20/30 questions), and chat with an AI that
-          understands your uploaded content. Fast, accurate, and secure.
+          Free AI Tutor that learns from your PDFs and website links. Generate summaries, quizzes (10/20/30 questions), and chat with an AI that understands your uploaded content. An AI study helper, free and secure. This AI tool for students can be your primary AI tutor from PDF or an AI tutor from a website link.
         </p>
       </div>
 

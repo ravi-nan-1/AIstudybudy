@@ -8,7 +8,22 @@ export const metadata: Metadata = {
   keywords: 'AI Tutor, AI learning assistant, AI study tool, PDF to AI tutor, AI quiz generator, AI summary generator, study with AI, chatbot for studying, AI tutor from PDF',
   alternates: {
     canonical: 'https://aitutor.all2ools.com/',
-  }
+  },
+  openGraph: {
+    title: 'AI Tutor – Upload PDF, Generate Summaries, Quizzes & Chat | Free Online AI Study Tool',
+    description: 'AI Tutor lets you upload PDFs or website links to generate summaries, quizzes (10/20/30 questions), and chat with an AI that understands your content. Fast, accurate, and free.',
+    url: 'https://aitutor.all2ools.com/',
+    siteName: 'AI Tutor',
+    images: [
+      {
+        url: 'https://aitutor.all2ools.com/og-image.png',
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({

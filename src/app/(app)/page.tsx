@@ -9,6 +9,35 @@ import {
   FileClock,
   ArrowRight,
   Check,
+  Combine,
+  Split,
+  RotateCcw,
+  Trash2,
+  ListOrdered,
+  Scissors,
+  CopyPlus,
+  TextSelect,
+  Shield,
+  KeyRound,
+  Layers,
+  FileScan,
+  Share2,
+  FileSignature,
+  FileImage,
+  FileSliders,
+  FileTerminal,
+  BrainCircuit,
+  Languages,
+  HelpCircle,
+  FileKey2,
+  PenSquare,
+  BookText,
+  ScanText,
+  MousePointerClick,
+  ShieldCheck,
+  Lock,
+  Download,
+  Camera,
 } from "lucide-react";
 import {
   Card,
@@ -40,6 +69,7 @@ const features = [
       "Use our AI chatbot for study. Ask questions and get detailed explanations from your AI tutor about your documents.",
     href: "/chat",
     icon: MessageCircle,
+    imageId: "dashboard-card-chat",
   },
   {
     title: "Upload Content",
@@ -47,6 +77,7 @@ const features = [
       "Add your study materials. This AI PDF tutor can learn from PDFs, videos, and web links.",
     href: "/upload",
     icon: Upload,
+    imageId: "dashboard-card-upload",
   },
   {
     title: "Content Library",
@@ -54,6 +85,7 @@ const features = [
       "Browse and manage all your uploaded study materials in one place.",
     href: "/library",
     icon: Library,
+    imageId: "dashboard-card-library",
   },
   {
     title: "Generate Summary",
@@ -61,6 +93,7 @@ const features = [
       "Use the AI summary generator to summarize PDF online and grasp key points quickly.",
     href: "/summary",
     icon: FileText,
+    imageId: "dashboard-card-summary",
   },
   {
     title: "Practice Quiz",
@@ -68,6 +101,7 @@ const features = [
       "Use the AI quiz generator to test your knowledge and generate questions from text. A great AI exam preparation tool.",
     href: "/practice",
     icon: ClipboardCheck,
+    imageId: "dashboard-card-quiz",
   },
   {
     title: "Learning Logs",
@@ -75,8 +109,67 @@ const features = [
       "Review what your AI learning companion has learned from your materials.",
     href: "/logs",
     icon: FileClock,
+    imageId: "dashboard-card-logs",
   },
 ];
+
+const toolCategories = [
+    {
+      title: 'AI PDF',
+      tools: [
+        { name: 'AI PDF Assistant', icon: BrainCircuit, href: '/chat' },
+        { name: 'Chat with PDF', icon: MessageCircle, href: '/chat' },
+        { name: 'AI PDF Summarizer', icon: FileTerminal, href: '/summary' },
+        { name: 'Translate PDF', icon: Languages, href: '#' },
+        { name: 'AI Question Generator', icon: HelpCircle, href: '/practice' },
+      ],
+    },
+    {
+      title: 'Organize',
+      tools: [
+        { name: 'Merge PDF', icon: Combine, href: '#' },
+        { name: 'Split PDF', icon: Split, href: '#' },
+        { name: 'Rotate PDF', icon: RotateCcw, href: '#' },
+        { name: 'Delete PDF Pages', icon: Trash2, href: '#' },
+        { name: 'Extract PDF Pages', icon: Scissors, href: '#' },
+        { name: 'Organize PDF', icon: CopyPlus, href: '#' },
+      ],
+    },
+    {
+      title: 'View & Edit',
+      tools: [
+        { name: 'Edit PDF', icon: PenSquare, href: '#' },
+        { name: 'PDF Annotator', icon: MousePointerClick, href: '#' },
+        { name: 'PDF Reader', icon: BookText, href: '#' },
+        { name: 'Number Pages', icon: ListOrdered, href: '#' },
+        { name: 'Crop PDF', icon: Scissors, href: '#' },
+        { name: 'Redact PDF', icon: TextSelect, href: '#' },
+        { name: 'Watermark PDF', icon: ShieldCheck, href: '#' },
+        { name: 'PDF Form Filler', icon: FileSliders, href: '#' },
+        { name: 'Share PDF', icon: Share2, href: '#' },
+      ],
+    },
+    {
+      title: 'Convert to PDF',
+      tools: [
+        { name: 'Word to PDF', icon: FileText, href: '#' },
+        { name: 'Excel to PDF', icon: FileText, href: '#' },
+        { name: 'PPT to PDF', icon: FileText, href: '#' },
+        { name: 'JPG to PDF', icon: FileImage, href: '#' },
+        { name: 'PDF OCR', icon: ScanText, href: '#' },
+      ],
+    },
+    {
+      title: 'More',
+      tools: [
+        { name: 'Sign PDF', icon: FileSignature, href: '#' },
+        { name: 'Unlock PDF', icon: Lock, href: '#' },
+        { name: 'Protect PDF', icon: Shield, href: '#' },
+        { name: 'Flatten PDF', icon: Download, href: '#' },
+        { name: 'PDF Scanner', icon: Camera, href: '#' },
+      ],
+    },
+  ];
 
 const heroImage = PlaceHolderImages.find((img) => img.id === "dashboard-hero");
 
@@ -163,32 +256,69 @@ export default function DashboardPage() {
           Explore Features
         </h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((feature) => (
-            <Card
-              key={feature.href}
-              className="flex flex-col hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 ease-in-out"
-            >
-              <CardHeader>
-                <div className="flex items-center gap-4">
-                  <div className="bg-primary/10 p-3 rounded-lg">
-                    <feature.icon className="w-6 h-6 text-primary" />
+          {features.map((feature) => {
+            const image = PlaceHolderImages.find(
+              (img) => img.id === feature.imageId
+            );
+            return (
+              <Card
+                key={feature.href}
+                className="flex flex-col group overflow-hidden"
+              >
+                <div className="relative h-48 overflow-hidden">
+                  {image && (
+                    <Image
+                      src={image.imageUrl}
+                      alt={image.description}
+                      data-ai-hint={image.imageHint}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute bottom-0 p-4">
+                     <div className="bg-primary/10 p-3 rounded-lg inline-block mb-2">
+                        <feature.icon className="w-6 h-6 text-primary" />
+                      </div>
+                    <CardTitle className="text-xl text-white">{feature.title}</CardTitle>
                   </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
                 </div>
-              </CardHeader>
-              <CardContent className="flex-grow">
-                <CardDescription>{feature.description}</CardDescription>
-              </CardContent>
-              <CardFooter>
-                <Button asChild className="w-full" variant="outline">
-                  <Link href={feature.href}>
-                    Go to {feature.title}{" "}
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+
+                <CardContent className="pt-4 flex-grow">
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardContent>
+                <CardFooter>
+                  <Button asChild className="w-full" variant="outline">
+                    <Link href={feature.href}>
+                      Go to {feature.title}{" "}
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-3xl font-bold tracking-tight text-center mb-8">Discover Our Tools</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 gap-y-8">
+            {toolCategories.map((category) => (
+                <div key={category.title} className="space-y-4">
+                    <h3 className="text-sm font-semibold text-muted-foreground tracking-wider uppercase">{category.title}</h3>
+                    <div className="space-y-3">
+                        {category.tools.map(tool => (
+                             <Link key={tool.name} href={tool.href} className="flex items-center gap-3 text-foreground hover:text-primary group">
+                                <div className="p-1.5 rounded-md bg-muted group-hover:bg-primary/10 transition-colors">
+                                    <tool.icon className="h-5 w-5 text-primary" />
+                                </div>
+                                <span className="font-medium text-sm">{tool.name}</span>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            ))}
         </div>
       </section>
 

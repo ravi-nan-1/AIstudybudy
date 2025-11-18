@@ -43,7 +43,12 @@ const pathToTitleMap: { [key: string]: string } = {
 export function AppHeader() {
   const pathname = usePathname();
   const segments = pathname.split("/").filter(Boolean);
-  const title = pathToTitleMap[pathname] || "AI Study Buddy";
+  
+  // Find the title for the current path, or fallback to the last segment capitalized
+  const title = pathToTitleMap[pathname] || 
+                (segments.length > 0 
+                  ? segments[segments.length - 1].charAt(0).toUpperCase() + segments[segments.length - 1].slice(1)
+                  : 'Dashboard');
 
   return (
     <header className="flex h-16 items-center gap-4 border-b bg-card px-4 md:px-6 sticky top-0 z-30">
@@ -54,7 +59,7 @@ export function AppHeader() {
             <span className="sr-only">Toggle navigation menu</span>
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="flex flex-col">
+        <SheetContent side="left" className="flex flex-col p-0">
           <SheetHeader className="sr-only">
             <SheetTitle>Navigation Menu</SheetTitle>
             <SheetDescription>
@@ -66,7 +71,7 @@ export function AppHeader() {
       </Sheet>
 
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/" className="text-foreground">
+        <Link href="/" className="text-foreground hover:text-primary transition-colors">
           <BookOpen className="h-5 w-5" />
         </Link>
         {segments.length > 0 && <ChevronRight className="h-4 w-4" />}
